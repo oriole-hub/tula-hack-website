@@ -4,7 +4,11 @@ import { canAccessRoute, getDefaultRoute } from "../../features/rbac/access";
 
 export const ProtectedRoute = () => {
   const { pathname } = useLocation();
-  const { role } = useSession();
+  const { isAuthenticated, role } = useSession();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/signin" replace />;
+  }
 
   if (!canAccessRoute(role, pathname)) {
     return <Navigate to={getDefaultRoute(role)} replace />;

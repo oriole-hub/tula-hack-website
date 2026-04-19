@@ -1,21 +1,21 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { navigationItems } from "../../features/navigation/menu";
-import { roleLabels, roleOrder } from "../../entities/session/model";
 import { useSession } from "../../shared/state/session";
-import { Card } from "../../shared/ui/Card";
 import { Button } from "../../shared/ui/Button";
 
 export const AppShell = () => {
   const { pathname } = useLocation();
-  const { role, setRole } = useSession();
+  const navigate = useNavigate();
+  const { companyName, role, signOut, userName } = useSession();
 
   return (
     <div className="app-shell">
       <aside className="app-shell__sidebar">
-        <div className="brand-mark">TEAM BUILDER</div>
+        <div className="brand-mark">{companyName}</div>
 
         <div className="app-shell__brand">
           <img src="/brand/t2-logo-white.svg" alt="TEAM BUILDER" />
+          <p>{userName}</p>
         </div>
 
         <nav className="app-shell__nav">
@@ -32,24 +32,16 @@ export const AppShell = () => {
             ))}
         </nav>
 
-        <Card className="role-switcher">
-          <p className="role-switcher__label">Роль просмотра</p>
-          <div className="role-switcher__grid">
-            {roleOrder.map((item) => (
-              <button
-                key={item}
-                className={item === role ? "role-pill role-pill--active" : "role-pill"}
-                onClick={() => setRole(item)}
-                type="button"
-              >
-                {roleLabels[item]}
-              </button>
-            ))}
-          </div>
-        </Card>
-
-        <Button className="app-shell__logout" variant="ghost">
-          Рабочее пространство
+        <Button
+          className="app-shell__logout"
+          variant="ghost"
+          onClick={() => {
+            signOut();
+            navigate("/signin");
+          }}
+          type="button"
+        >
+          Выйти из кабинета
         </Button>
       </aside>
 

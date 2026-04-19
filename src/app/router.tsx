@@ -11,7 +11,6 @@ import { AssessmentsPage } from "../pages/AssessmentsPage";
 import { IdealProfilesPage } from "../pages/IdealProfilesPage";
 import { CandidatesPage } from "../pages/CandidatesPage";
 import { RisksPage } from "../pages/RisksPage";
-import { RoleMapPage } from "../pages/RoleMapPage";
 import { TalentPoolPage } from "../pages/TalentPoolPage";
 import { SuccessionPage } from "../pages/SuccessionPage";
 import { NotificationsPage } from "../pages/NotificationsPage";
@@ -35,7 +34,6 @@ export const RouterProvider = () => (
             <Route path="/ideal-profiles" element={<IdealProfilesPage />} />
             <Route path="/candidates" element={<CandidatesPage />} />
             <Route path="/risks" element={<RisksPage />} />
-            <Route path="/role-map" element={<RoleMapPage />} />
             <Route path="/talent-pool" element={<TalentPoolPage />} />
             <Route path="/succession-planning" element={<SuccessionPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />

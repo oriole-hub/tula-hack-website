@@ -65,7 +65,17 @@ export const AssessmentsPage = () => {
         <Card className="panel">
           <p className="panel__eyebrow">DISC</p>
           <h2>Отправить профиль</h2>
-          <form className="inline-form" onSubmit={discForm.handleSubmit((values) => submitDisc(values))}>
+          <form
+            className="inline-form"
+            onSubmit={discForm.handleSubmit((values) =>
+              submitDisc({
+                employee_id: values.employee_id,
+                dominant_style: values.dominant_style,
+                secondary_style: values.secondary_style,
+                notes: values.notes,
+              }),
+            )}
+          >
             <label>
               <span>Сотрудник</span>
               <select {...discForm.register("employee_id")}>
@@ -99,11 +109,18 @@ export const AssessmentsPage = () => {
         <Card className="panel panel--magenta">
           <p className="panel__eyebrow">Мотивация</p>
           <h2>Обновить мотиваторы</h2>
-          <form className="inline-form inline-form--inverse" onSubmit={motivationForm.handleSubmit((values) => submitMotivation({
-            ...values,
-            motivators: values.motivators.split(",").map((item) => item.trim()).filter(Boolean),
-            stress_triggers: values.stress_triggers.split(",").map((item) => item.trim()).filter(Boolean),
-          }))}>
+          <form
+            className="inline-form inline-form--inverse"
+            onSubmit={motivationForm.handleSubmit((values) =>
+              submitMotivation({
+                employee_id: values.employee_id,
+                autonomy_level: values.autonomy_level,
+                change_orientation: values.change_orientation,
+                motivators: values.motivators.split(",").map((item) => item.trim()).filter(Boolean),
+                stress_triggers: values.stress_triggers.split(",").map((item) => item.trim()).filter(Boolean),
+              }),
+            )}
+          >
             <label>
               <span>Сотрудник</span>
               <select {...motivationForm.register("employee_id")}>
@@ -137,7 +154,20 @@ export const AssessmentsPage = () => {
         <Card className="panel panel--dark">
           <p className="panel__eyebrow">Pulse</p>
           <h2>Обновить состояние</h2>
-          <form className="inline-form inline-form--inverse" onSubmit={pulseForm.handleSubmit((values) => submitPulse(values.employee_id, values))}>
+          <form
+            className="inline-form inline-form--inverse"
+            onSubmit={pulseForm.handleSubmit((values) =>
+              submitPulse(values.employee_id, {
+                mood: values.mood,
+                stress: values.stress,
+                workload: values.workload,
+                recognition: values.recognition,
+                collaboration: values.collaboration,
+                attrition_signal: values.attrition_signal,
+                comment: values.comment,
+              }),
+            )}
+          >
             <label>
               <span>Сотрудник</span>
               <select {...pulseForm.register("employee_id")}>

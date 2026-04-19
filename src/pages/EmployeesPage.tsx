@@ -32,6 +32,8 @@ export const EmployeesPage = () => {
     defaultValues: {
       work_mode: "гибрид",
       tenure_months: 6,
+      manager_id: managerOptions[0]?.id ?? "",
+      team_id: teams[0]?.id ?? "",
     },
   });
 
@@ -50,7 +52,17 @@ export const EmployeesPage = () => {
           <form
             className="inline-form inline-form--compact"
             onSubmit={handleSubmit((values) => {
-              addEmployee(values);
+              addEmployee({
+                first_name: values.first_name,
+                last_name: values.last_name,
+                email: values.email,
+                title: values.title,
+                department: values.department,
+                manager_id: values.manager_id,
+                tenure_months: values.tenure_months,
+                work_mode: values.work_mode,
+                team_id: values.team_id,
+              });
               reset({
                 first_name: "",
                 last_name: "",
@@ -123,11 +135,11 @@ export const EmployeesPage = () => {
         </Card>
 
         <Card className="panel panel--dark">
-          <p className="panel__eyebrow">Сценарии MVP</p>
+          <p className="panel__eyebrow">Как это работает</p>
           <ul className="clean-list">
-            <li>Карточки ведут в профиль сотрудника с редактируемыми полями.</li>
-            <li>Добавленные сотрудники сразу появляются в каталоге и в выбранной команде.</li>
-            <li>Каталог помогает быстро собрать рабочую структуру людей и ролей.</li>
+            <li>Карточки ведут в профиль сотрудника с редактируемыми данными, DISC и мотивацией.</li>
+            <li>Добавленные сотрудники сразу появляются в каталоге, командах и аналитических разделах.</li>
+            <li>Каталог помогает быстро собрать рабочую структуру людей и ролей внутри компании.</li>
           </ul>
         </Card>
       </section>

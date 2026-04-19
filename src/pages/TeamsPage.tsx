@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +9,7 @@ import { StatusChip } from "../shared/ui/StatusChip";
 import { Button } from "../shared/ui/Button";
 import { toRuLabel } from "../shared/lib/ru";
 
-const schema = z.object({
+const teamSchema = z.object({
   name: z.string().min(2, "Введите название команды"),
   department: z.string().min(2, "Введите отдел"),
   mission: z.string().min(12, "Кратко опишите миссию команды"),
@@ -16,12 +17,14 @@ const schema = z.object({
   maturity_stage: z.string().min(2, "Укажите этап зрелости"),
 });
 
-type TeamFormValues = z.infer<typeof schema>;
+type TeamFormValues = z.infer<typeof teamSchema>;
 
 export const TeamsPage = () => {
-  const { teams, addTeam } = usePortal();
+  const { teams, employees, addTeam, assignEmployeeToTeam } = usePortal();
+  const [assignmentDrafts, setAssignmentDrafts] = useState<Record<string, string>>({});
+  const availableEmployees = employees.filter((employee) => employee.id && employee.fullName);
   const { register, handleSubmit, reset, formState } = useForm<TeamFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(teamSchema),
     defaultValues: {
       team_type: "кросс-функциональная",
       maturity_stage: "scaling",
@@ -43,8 +46,20 @@ export const TeamsPage = () => {
           <form
             className="inline-form"
             onSubmit={handleSubmit((values) => {
-              addTeam(values);
-              reset({ name: "", department: "", mission: "", team_type: "кросс-функциональная", maturity_stage: "scaling" });
+              addTeam({
+                name: values.name,
+                department: values.department,
+                mission: values.mission,
+                team_type: values.team_type,
+                maturity_stage: values.maturity_stage,
+              });
+              reset({
+                name: "",
+                department: "",
+                mission: "",
+                team_type: "кросс-функциональная",
+                maturity_stage: "scaling",
+              });
             })}
           >
             <label>
@@ -78,8 +93,8 @@ export const TeamsPage = () => {
           <p className="panel__eyebrow">Что доступно</p>
           <ul className="clean-list">
             <li>Создание новой команды в рабочем контуре.</li>
-            <li>Отображение состава и текущей зрелости по каждой команде.</li>
-            <li>Команды можно использовать как основу для аналитики, оценки рисков и кадрового резерва.</li>
+            <li>Назначение сотрудников в нужную команду прямо из интерфейса.</li>
+            <li>Состав команды сразу влияет на дашборд и командную аналитику.</li>
           </ul>
         </Card>
       </section>
@@ -98,6 +113,46 @@ export const TeamsPage = () => {
               />
             </div>
             <p className="panel__body-copy">{toRuLabel(team.mission)}</p>
+
+            <div className="inline-form">
+              <label className="inline-form__wide">
+                <span>Добавить сотрудника в команду</span>
+                <select
+                  value={assignmentDrafts[team.id] ?? ""}
+                  onChange={(event) =>
+                    setAssignmentDrafts((current) => ({
+                      ...current,
+                      [team.id]: event.target.value,
+                    }))
+                  }
+                >
+                  <option value="">Выберите сотрудника</option>
+                  {availableEmployees.map((employee) => (
+                    <option key={employee.id} value={employee.id}>
+                      {toRuLabel(employee.fullName)} · {toRuLabel(employee.title)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <Button
+                type="button"
+                onClick={() => {
+                  const employeeId = assignmentDrafts[team.id];
+                  if (!employeeId) {
+                    return;
+                  }
+
+                  assignEmployeeToTeam(employeeId, team.id);
+                  setAssignmentDrafts((current) => ({
+                    ...current,
+                    [team.id]: "",
+                  }));
+                }}
+              >
+                Назначить в команду
+              </Button>
+            </div>
+
             <div className="member-list">
               {team.members.length > 0 ? (
                 team.members.map((member) => (
@@ -107,7 +162,7 @@ export const TeamsPage = () => {
                   </div>
                 ))
               ) : (
-                <div className="empty-state">Пока без участников. Можно начать с добавления сотрудников.</div>
+                <div className="empty-state">Пока без участников. Можно начать с назначения сотрудников.</div>
               )}
             </div>
           </Card>

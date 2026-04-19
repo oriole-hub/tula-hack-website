@@ -14,7 +14,6 @@ export const navigationItems: NavigationItem[] = [
   { path: "/ideal-profiles", label: "Идеальный профиль", roles: ["company_admin", "hr"] },
   { path: "/candidates", label: "Кандидаты", roles: ["company_admin", "hr"] },
   { path: "/risks", label: "Риски", roles: ["company_admin", "hr", "manager"] },
-  { path: "/role-map", label: "Карта ролей", roles: ["company_admin", "hr", "manager"] },
   { path: "/talent-pool", label: "Кадровый резерв", roles: ["company_admin", "hr"] },
   { path: "/succession-planning", label: "Преемственность", roles: ["company_admin", "hr"] },
   { path: "/notifications", label: "Уведомления", roles: ["company_admin", "hr", "manager", "employee"] },

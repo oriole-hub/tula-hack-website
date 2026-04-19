@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { usePortal } from "../shared/state/portal";
 import { Button } from "../shared/ui/Button";
 import { Card } from "../shared/ui/Card";
@@ -5,10 +6,6 @@ import { MetricCard } from "../shared/ui/MetricCard";
 import { PageHeader } from "../shared/ui/PageHeader";
 import { initials, toRuLabel } from "../shared/lib/ru";
 
-<<<<<<< HEAD
-export const DashboardPage = () => {
-  const { company, matrix, risks, teamDashboard, teams } = usePortal();
-=======
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const normalize = (value: number, min: number, max: number) => {
@@ -20,7 +17,8 @@ const normalize = (value: number, min: number, max: number) => {
 };
 
 export const DashboardPage = () => {
-  const { company, matrix, risks, teamDashboard, teams } = usePortal();
+  const { company, matrix, risks, selectedTeamId, setSelectedTeamId, teamDashboard, teams } = usePortal();
+  const activeTeam = teams.find((team) => team.id === selectedTeamId) ?? teams[0];
   const performanceValues = matrix.map((item) => item.performance);
   const potentialValues = matrix.map((item) => item.potential);
   const minPerformance = Math.min(...performanceValues);
@@ -54,7 +52,6 @@ export const DashboardPage = () => {
       offsetY: offset.y,
     };
   });
->>>>>>> b98eaf3 (Initial commit)
 
   return (
     <div className="page-grid">
@@ -79,9 +76,19 @@ export const DashboardPage = () => {
               <p className="panel__eyebrow">Команда</p>
               <h2>{toRuLabel(teamDashboard.team_name)}</h2>
             </div>
+            <label className="dashboard-team-select">
+              <span>Команда для аналитики</span>
+              <select value={selectedTeamId} onChange={(event) => setSelectedTeamId(event.target.value)}>
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {toRuLabel(team.name)}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="bar-list">
-            {teams[0].members.map((member) => (
+            {activeTeam.members.map((member) => (
               <div key={member.employeeId} className="bar-list__row">
                 <div>
                   <strong>{toRuLabel(member.fullName)}</strong>
@@ -111,21 +118,6 @@ export const DashboardPage = () => {
         <Card className="panel">
           <p className="panel__eyebrow">Результативность / потенциал</p>
           <h2>Матрица потенциала</h2>
-<<<<<<< HEAD
-          <div className="matrix-grid">
-            {matrix.map((item) => (
-              <div
-                key={item.name}
-                className="matrix-point"
-                style={{
-                  left: `${item.performance}%`,
-                  bottom: `${item.potential}%`,
-                }}
-              >
-                <span>{initials(toRuLabel(item.name))}</span>
-              </div>
-            ))}
-=======
           <div className="matrix-wrap">
             <div className="matrix-grid__y-axis">
               <span>Высокий потенциал</span>
@@ -154,12 +146,14 @@ export const DashboardPage = () => {
                 <div
                   key={item.name}
                   className="matrix-point"
-                  style={{
-                    left: `${item.left}%`,
-                    bottom: `${item.bottom}%`,
-                    ["--matrix-offset-x" as "--matrix-offset-x"]: `${item.offsetX}px`,
-                    ["--matrix-offset-y" as "--matrix-offset-y"]: `${item.offsetY}px`,
-                  }}
+                  style={
+                    {
+                      left: `${item.left}%`,
+                      bottom: `${item.bottom}%`,
+                      ["--matrix-offset-x" as "--matrix-offset-x"]: `${item.offsetX}px`,
+                      ["--matrix-offset-y" as "--matrix-offset-y"]: `${item.offsetY}px`,
+                    } as CSSProperties
+                  }
                   title={`${item.label}: результативность ${item.performance}, потенциал ${item.potential}`}
                 >
                   <span>{item.shortLabel}</span>
@@ -171,19 +165,14 @@ export const DashboardPage = () => {
             <span>Низкая результативность</span>
             <strong>Результативность</strong>
             <span>Высокая результативность</span>
->>>>>>> b98eaf3 (Initial commit)
           </div>
           <div className="matrix-legend">
             {matrix.map((item) => (
               <div key={item.name} className="matrix-legend__item">
-<<<<<<< HEAD
-                <strong>{toRuLabel(item.name)}</strong>
-=======
                 <div className="matrix-legend__head">
                   <span className="matrix-legend__avatar" aria-hidden="true" />
                   <strong>{toRuLabel(item.name)}</strong>
                 </div>
->>>>>>> b98eaf3 (Initial commit)
                 <span>Результативность {item.performance} / Потенциал {item.potential}</span>
               </div>
             ))}

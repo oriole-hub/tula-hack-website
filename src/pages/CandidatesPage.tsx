@@ -43,7 +43,10 @@ export const CandidatesPage = () => {
             className="inline-form"
             onSubmit={handleSubmit((values) => {
               addCandidate({
-                ...values,
+                full_name: values.full_name,
+                email: values.email,
+                target_role: values.target_role,
+                summary: values.summary,
                 skills: values.skills.split(",").map((item) => item.trim()).filter(Boolean),
               });
               reset({ full_name: "", email: "", target_role: idealProfiles[0]?.roleName ?? "", summary: "", skills: "" });
